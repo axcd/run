@@ -7,7 +7,7 @@
 const int Window_WIDTH = 720;
 const int Window_HEIGHT = 1280;
 
-SDL_Window *window = NULL;
+SDL_Window * window = NULL;
 SDL_Surface *bkg = NULL;
 SDL_Surface *foo = NULL;
 SDL_Surface *joy = NULL;
@@ -25,7 +25,6 @@ int ys = 0;
 int xd = 200;
 int yd = 300;
 int code = 0;
-
 
 void setDstrect(int x, int y, int w, int h) {
   dstrect.x = x;
