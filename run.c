@@ -95,13 +95,6 @@ int load_image() {
   return 0;
 }
 
-int put_image(SDL_Texture *tex, SDL_Rect srcrect, SDL_Rect dstrect) {
-
-  SDL_RenderCopy(render, tex, &srcrect, &dstrect);
-
-  return 0;
-}
-
 int iskey() {
 
   if (pow(xc, 2) + pow(yc, 2) > pow(R, 2)) {
@@ -215,19 +208,17 @@ void move() {
 }
 
 void display(int xs, int ys, int xd, int yd) {
+	
   SDL_RenderClear(render);
-
-  setDstrect(0, 0, 720, 1280);
-  setSrcrect(0, 0, 720, 1280);
-  put_image(bkgtex, srcrect, dstrect);
+  SDL_RenderCopy(render, bkgtex, NULL, NULL);
   setSrcrect(xs, ys, 205, 64);
   setDstrect(xd, yd, 205, 64);
-  put_image(footex, srcrect, dstrect);
+  SDL_RenderCopy(render, footex, &srcrect, &dstrect);
   setSrcrect(0, 0, 360, 360);
   setDstrect(60, 800, 360, 360);
-  put_image(joytex, srcrect, dstrect);
-
+  SDL_RenderCopy(render, joytex, &srcrect, &dstrect);
   SDL_RenderPresent(render);
+  
 }
 
 void clean_up() {
