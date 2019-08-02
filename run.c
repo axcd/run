@@ -7,11 +7,10 @@ const int Window_WIDTH = 720;
 const int Window_HEIGHT = 1280;
 
 SDL_Window *window = NULL;
-SDL_Surface *bkg = NULL;
-SDL_Surface *foo = NULL;
-SDL_Surface *joy = NULL;
 SDL_Renderer *render = NULL;
-SDL_Texture *tex = NULL;
+SDL_Texture *bkgtex = NULL;
+SDL_Texture *footex = NULL;
+SDL_Texture *joytex = NULL;
 
 SDL_Event event;
 SDL_Rect dstrect;
@@ -65,11 +64,17 @@ int Init() {
 }
 
 int load_image() {
+	
+   SDL_Surface *bkg = NULL;
+   SDL_Surface *foo = NULL;
+   SDL_Surface *joy = NULL;
 
   bkg = IMG_Load("resource/background.png");
   if (bkg == NULL) {
     return 1;
   }
+  bkgtex = SDL_CreateTextureFromSurface(render, bkg);
+  SDL_FreeSurface(bkg);
 
   foo = IMG_Load("resource/foo.png");
   if (foo == NULL) {
@@ -77,18 +82,21 @@ int load_image() {
   }
   Uint32 colorkey = SDL_MapRGB(foo->format, 0, 0xFF, 0xFF);
   SDL_SetColorKey(foo, 1, colorkey);
+  footex = SDL_CreateTextureFromSurface(render, foo);
+  SDL_FreeSurface(foo);
 
   joy = IMG_Load("resource/joystick.png");
   if (joy == NULL) {
     return 1;
   }
+  joytex = SDL_CreateTextureFromSurface(render, joy);
+  SDL_FreeSurface(joy);
 
   return 0;
 }
 
-int put_image(SDL_Surface * img, SDL_Rect srcrect, SDL_Rect dstrect) {
+int put_image(SDL_Texture *tex, SDL_Rect srcrect, SDL_Rect dstrect) {
 
-  tex = SDL_CreateTextureFromSurface(render, img);
   SDL_RenderCopy(render, tex, &srcrect, &dstrect);
 
   return 0;
@@ -211,24 +219,23 @@ void display(int xs, int ys, int xd, int yd) {
 
   setDstrect(0, 0, 720, 1280);
   setSrcrect(0, 0, 720, 1280);
-  put_image(bkg, srcrect, dstrect);
+  put_image(bkgtex, srcrect, dstrect);
   setSrcrect(xs, ys, 205, 64);
   setDstrect(xd, yd, 205, 64);
-  put_image(foo, srcrect, dstrect);
+  put_image(footex, srcrect, dstrect);
   setSrcrect(0, 0, 360, 360);
   setDstrect(60, 800, 360, 360);
-  put_image(joy, srcrect, dstrect);
+  put_image(joytex, srcrect, dstrect);
 
   SDL_RenderPresent(render);
 }
 
 void clean_up() {
-  SDL_FreeSurface(bkg);
-  SDL_FreeSurface(foo);
-  SDL_FreeSurface(joy);
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(render);
-  SDL_DestroyTexture(tex);
+  SDL_DestroyTexture(bkgtex);
+  SDL_DestroyTexture(footex);
+  SDL_DestroyTexture(joytex);
   SDL_Quit();
 }
 
