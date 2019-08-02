@@ -1,9 +1,7 @@
 #include<math.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
-
 #define PI 3.14159265
-
 const int Window_WIDTH = 720;
 const int Window_HEIGHT = 1280;
 
@@ -168,11 +166,11 @@ void handle_input() {
     if (!iskey()) {
       code = 0;
     }
-  } 
-  
-  if (event.type == SDL_MOUSEBUTTONUP){
+  }
+
+  if (event.type == SDL_MOUSEBUTTONUP) {
     code = 0;
-    }
+  }
 }
 
 void move() {
