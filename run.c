@@ -1,13 +1,12 @@
 #include<math.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
-
 #define PI 3.14159265
 
 const int Window_WIDTH = 720;
 const int Window_HEIGHT = 1280;
 
-SDL_Window * window = NULL;
+SDL_Window *window = NULL;
 SDL_Surface *bkg = NULL;
 SDL_Surface *foo = NULL;
 SDL_Surface *joy = NULL;
@@ -26,12 +25,12 @@ int xd = 200;
 int yd = 300;
 int code = 0;
 
+
 void setDstrect(int x, int y, int w, int h) {
   dstrect.x = x;
   dstrect.y = y;
   dstrect.w = w;
   dstrect.h = h;
-  return;
 }
 
 void setSrcrect(int x, int y, int w, int h) {
@@ -39,12 +38,11 @@ void setSrcrect(int x, int y, int w, int h) {
   srcrect.y = y;
   srcrect.w = w;
   srcrect.h = h;
-  return;
 }
 
 int Init() {
   R = 180;
-  r = 70;
+  r = 80;
 
   SDL_Init(SDL_INIT_EVERYTHING);
   window = SDL_CreateWindow("SDL2",
@@ -148,6 +146,7 @@ int right() {
 void handle_input() {
 
   if (event.type == SDL_MOUSEMOTION) {
+
     if (up()) {
       code = 1;
     }
@@ -163,10 +162,11 @@ void handle_input() {
     if (right()) {
       code = 4;
     }
-
+    
     if (!iskey()) {
       code = 0;
     }
+
   }
 
   if (event.type == SDL_MOUSEBUTTONUP) {
@@ -203,6 +203,7 @@ void move() {
     ys = ys % 256;
     yd += 16;
   }
+
 }
 
 void display(int xs, int ys, int xd, int yd) {
@@ -219,7 +220,6 @@ void display(int xs, int ys, int xd, int yd) {
   put_image(joy, srcrect, dstrect);
 
   SDL_RenderPresent(render);
-  return;
 }
 
 void clean_up() {
@@ -230,7 +230,6 @@ void clean_up() {
   SDL_DestroyRenderer(render);
   SDL_DestroyTexture(tex);
   SDL_Quit();
-  return;
 }
 
 int main(int argc, char **args) {
