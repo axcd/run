@@ -242,10 +242,10 @@ int main(int argc, char **args) {
   if (load_image())
     return 1;
 
-  display(xs, ys, xd, yd);
   while (!quit) {
     fps = SDL_GetTicks();
 
+    display(xs, ys, xd, yd);
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT) {
         quit = 1;
@@ -259,7 +259,6 @@ int main(int argc, char **args) {
     }
 
     move();
-    display(xs, ys, xd, yd);
 
     fps = SDL_GetTicks() - fps;
     if (fps < 100) {
