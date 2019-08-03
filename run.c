@@ -20,6 +20,7 @@ int x, y, R, r;
 int xc, yc, rc;
 int xd, yd;
 int Max_X, Max_Y;
+int Foo_W, Foo_H;
 int code = 0;
 
 int get_data(){
@@ -35,6 +36,8 @@ int get_data(){
   yd = floor(0.06*Window_WIDTH);
   Max_X = floor(0.35*Window_WIDTH);
   Max_Y = floor(0.95*Window_HEIGHT);
+  Foo_W = floor(0.28*Window_WIDTH);
+  Foo_H = floor(0.05*Window_HEIGHT);
 	
   srcrect.x = 205;
   srcrect.y = 0;
@@ -43,8 +46,8 @@ int get_data(){
 	
   dstrect.x = floor(0.20*Window_WIDTH);
   dstrect.y = floor(0.45*Window_HEIGHT);
-  dstrect.w = 205;
-  dstrect.h = 64;
+  dstrect.w = Foo_W;
+  dstrect.h = Foo_H;
   return 0;
 }
 
@@ -189,28 +192,28 @@ void move() {
     srcrect.x = 205;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.x += 16;
+    dstrect.x += floor(Foo_H/4);
   }
 
   if (code == 2 && dstrect.x >= 0) {
     srcrect.x = 0;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.x -= 16;
+    dstrect.x -= floor(Foo_H/4);
   }
 
   if (code == 3 && dstrect.y >= 0) {
     srcrect.x = 0;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.y -= 16;
+    dstrect.y -= floor(Foo_H/4);
   }
 
   if (code == 4 && dstrect.y <= Max_Y) {
     srcrect.x = 205;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.y += 16;
+    dstrect.y += floor(Foo_H/4);
   }
 
 }
