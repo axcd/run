@@ -3,8 +3,8 @@
 #include "SDL2/SDL_image.h"
 #define PI 3.14159265
 
-const int Window_WIDTH = 720;
-const int Window_HEIGHT = 1280;
+int Window_WIDTH = 720;
+int Window_HEIGHT = 1280;
 
 SDL_Window *window = NULL;
 SDL_Renderer *render = NULL;
@@ -18,33 +18,41 @@ SDL_Rect srcrect;
 
 int x, y, R, r;
 int xc, yc, rc;
-int xs = 205;
-int ys = 0;
-int xd = 200;
-int yd = 300;
+int xd, yd;
+int Max_X, Max_Y;
 int code = 0;
 
+int get_data(){
 
-void setDstrect(int x, int y, int w, int h) {
-  dstrect.x = x;
-  dstrect.y = y;
-  dstrect.w = w;
-  dstrect.h = h;
-}
+  SDL_DisplayMode displayMode;
+  if ( SDL_GetCurrentDisplayMode(0, &displayMode) != 0 ) return 1;
+  Window_WIDTH = displayMode.w;
+  Window_HEIGHT = displayMode.h;
 
-void setSrcrect(int x, int y, int w, int h) {
-  srcrect.x = x;
-  srcrect.y = y;
-  srcrect.w = w;
-  srcrect.h = h;
+  R = floor(0.25*Window_WIDTH);
+  r = floor(0.12*Window_WIDTH);
+  xd = floor(0.06*Window_WIDTH);
+  yd = floor(0.06*Window_WIDTH);
+  Max_X = floor(0.35*Window_WIDTH);
+  Max_Y = floor(0.95*Window_HEIGHT);
+	
+  srcrect.x = 205;
+  srcrect.y = 0;
+  srcrect.w = 205;
+  srcrect.h = 64;
+	
+  dstrect.x = floor(0.20*Window_WIDTH);
+  dstrect.y = floor(0.45*Window_HEIGHT);
+  dstrect.w = 205;
+  dstrect.h = 64;
+  return 0;
 }
 
 int Init() {
-  R = 180;
-  r = 80;
 
-  SDL_Init(SDL_INIT_EVERYTHING);
-  window = SDL_CreateWindow("SDL2",
+  if ( SDL_Init(SDL_INIT_EVERYTHING) != -1 ) return 1;
+  if ( get_data() != 0 ) return 1;
+  window = SDL_CreateWindow("SDL2 RUN",
                             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                             Window_WIDTH, Window_HEIGHT, SDL_WINDOW_SHOWN);
 
@@ -177,48 +185,56 @@ void handle_input() {
 
 void move() {
 
-  if (code == 1 && xd <= 250) {
-    xs = 205;
-    ys += 64;
-    ys = ys % 256;
-    xd += 16;
+  if (code == 1 && dstrect.x <= Max_X) {
+    srcrect.x = 205;
+    srcrect.y += 64;
+    srcrect.y = srcrect.y % 256;
+    dstrect.x += 16;
   }
 
-  if (code == 2 && xd >= 0) {
-    xs = 0;
-    ys += 64;
-    ys = ys % 256;
-    xd -= 16;
+  if (code == 2 && dstrect.x >= 0) {
+    srcrect.x = 0;
+    srcrect.y += 64;
+    srcrect.y = srcrect.y % 256;
+    dstrect.x -= 16;
   }
 
-  if (code == 3 && yd >= 0) {
-    xs = 0;
-    ys += 64;
-    ys = ys % 256;
-    yd -= 16;
+  if (code == 3 && dstrect.y >= 0) {
+    srcrect.x = 0;
+    srcrect.y += 64;
+    srcrect.y = srcrect.y % 256;
+    dstrect.y -= 16;
   }
 
-  if (code == 4 && yd <= 1150) {
-    xs = 205;
-    ys += 64;
-    ys = ys % 256;
-    yd += 16;
+  if (code == 4 && dstrect.y <= Max_Y) {
+    srcrect.x = 205;
+    srcrect.y += 64;
+    srcrect.y = srcrect.y % 256;
+    dstrect.y += 16;
   }
 
 }
 
-void display(int xs, int ys, int xd, int yd) {
-	
+void put_joystick(){
+	SDL_Rect drect ;
+	SDL_Rect srect ;
+	srect.x = 0;
+    srect.y = 0;
+    srect.w = 2*R;
+    srect.h = 2*R;
+	drect.x = xd;
+    drect.y = yd;
+    drect.w = 2*R;
+    drect.h = 2*R;
+    SDL_RenderCopy(render, joytex, &srect, &drect);
+}
+
+void display() {	
   SDL_RenderClear(render);
   SDL_RenderCopy(render, bkgtex, NULL, NULL);
-  setSrcrect(xs, ys, 205, 64);
-  setDstrect(xd, yd, 205, 64);
   SDL_RenderCopy(render, footex, &srcrect, &dstrect);
-  setSrcrect(0, 0, 360, 360);
-  setDstrect(60, 800, 360, 360);
-  SDL_RenderCopy(render, joytex, &srcrect, &dstrect);
+  put_joystick();
   SDL_RenderPresent(render);
-  
 }
 
 void clean_up() {
@@ -243,15 +259,15 @@ int main(int argc, char **args) {
   while (!quit) {
     fps = SDL_GetTicks();
 
-    display(xs, ys, xd, yd);
+    display();
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT) {
         quit = 1;
       }
       x = event.button.x;
       y = event.button.y;
-      xc = x - R - 60;
-      yc = y - R - 800;
+      xc = x - R - xd;
+      yc = y - R - yd;
       rc = sqrt(pow(xc, 2) + pow(yc, 2));
       handle_input();
     }
