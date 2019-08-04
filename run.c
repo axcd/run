@@ -18,9 +18,8 @@ SDL_Rect srcrect;
 
 int x, y, R, r;
 int xc, yc, rc;
-int xd, yd;
-int Max_X, Max_Y;
-int Foo_W, Foo_H;
+int Max_X, Max_Y, Joy_X, Joy_Y;
+int Foo_W, Foo_H, Foo_X, Foo_Y;
 int code = 0;
 
 int get_data(){
@@ -32,10 +31,12 @@ int get_data(){
 
   R = floor(0.25*Window_WIDTH);
   r = floor(0.12*Window_WIDTH);
-  xd = floor(0.06*Window_WIDTH);
-  yd = floor(0.06*Window_WIDTH);
+  Joy_X = floor(0.06*Window_WIDTH);
+  Joy_Y = floor(0.06*Window_WIDTH);
   Max_X = floor(0.35*Window_WIDTH);
   Max_Y = floor(0.95*Window_HEIGHT);
+  Foo_X = floor(0.2*Window_WIDTH);
+  Foo_Y = floor(0.45*Window_HEIGHT);
   Foo_W = floor(0.28*Window_WIDTH);
   Foo_H = floor(0.05*Window_HEIGHT);
 	
@@ -44,8 +45,8 @@ int get_data(){
   srcrect.w = 205;
   srcrect.h = 64;
 	
-  dstrect.x = floor(0.20*Window_WIDTH);
-  dstrect.y = floor(0.45*Window_HEIGHT);
+  dstrect.x = Foo_X;
+  dstrect.y = Foo_Y;
   dstrect.w = Foo_W;
   dstrect.h = Foo_H;
   return 0;
@@ -225,8 +226,8 @@ void put_joystick(){
     srect.y = 0;
     srect.w = 2*R;
     srect.h = 2*R;
-	drect.x = xd;
-    drect.y = yd;
+	drect.x = Joy_X;
+    drect.y = Joy_Y;
     drect.w = 2*R;
     drect.h = 2*R;
     SDL_RenderCopy(render, joytex, &srect, &drect);
@@ -269,8 +270,8 @@ int main(int argc, char **args) {
       }
       x = event.button.x;
       y = event.button.y;
-      xc = x - R - xd;
-      yc = y - R - yd;
+      xc = x - (R + Joy_X);
+      yc = y - (R + Joy_Y);
       rc = sqrt(pow(xc, 2) + pow(yc, 2));
       handle_input();
     }
