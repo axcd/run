@@ -189,32 +189,32 @@ void handle_input() {
 
 void move() {
 
-  if (code == 1 && dstrect.x <= Max_X) {
+  if (code == 1) {
     srcrect.x = 205;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.x += floor(Foo_H/4);
+    if (dstrect.x <= Max_X)dstrect.x += floor(Foo_H/4);
   }
 
-  if (code == 2 && dstrect.x >= 0) {
+  if (code == 2) {
     srcrect.x = 0;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.x -= floor(Foo_H/4);
+    if ( dstrect.x >= 0 ) dstrect.x -= floor(Foo_H/4);
   }
 
-  if (code == 3 && dstrect.y >= 0) {
+  if (code == 3 ){
     srcrect.x = 0;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.y -= floor(Foo_H/4);
+    if (dstrect.y >= 0) dstrect.y -= floor(Foo_H/4);
   }
 
-  if (code == 4 && dstrect.y <= Max_Y) {
+  if (code == 4 ){
     srcrect.x = 205;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    dstrect.y += floor(Foo_H/4);
+     if (dstrect.y <= Max_Y) dstrect.y += floor(Foo_H/4);
   }
 
 }
