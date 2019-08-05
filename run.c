@@ -31,7 +31,7 @@ int get_data() {
 
   SDL_DisplayMode displayMode;
   if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
-    return 0;
+    return 1;
     
   Window_WIDTH = displayMode.w;
   Window_HEIGHT = displayMode.h;
@@ -56,14 +56,14 @@ int get_data() {
   dstrect.y = Foo_Y;
   dstrect.w = Foo_W;
   dstrect.h = Foo_H;
-  return 1;
+  return 0;
 }
 
 int Init() {
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != -1)
     return 1;
-  if (!get_data())
+  if (get_data() != 0)
     return 1;
   window = SDL_CreateWindow("SDL2 RUN",
                             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -155,34 +155,31 @@ void move() {
 
   if (code == UP) {
     srcrect.x = 205;
-    srcrect.y += 64;
-    srcrect.y = srcrect.y % 256;
     if (dstrect.x <= Max_X)
       dstrect.x += floor(Foo_H / 4);
   }
 
   if (code == DWON) {
     srcrect.x = 0;
-    srcrect.y += 64;
-    srcrect.y = srcrect.y % 256;
     if (dstrect.x >= 0)
       dstrect.x -= floor(Foo_H / 4);
   }
 
   if (code == LEFT) {
     srcrect.x = 0;
-    srcrect.y += 64;
-    srcrect.y = srcrect.y % 256;
     if (dstrect.y >= 0)
       dstrect.y -= floor(Foo_H / 4);
   }
 
   if (code == RIGHT) {
     srcrect.x = 205;
-    srcrect.y += 64;
-    srcrect.y = srcrect.y % 256;
     if (dstrect.y <= Max_Y)
       dstrect.y += floor(Foo_H / 4);
+  }
+  
+  if (code != 0){	
+    srcrect.y += 64;
+    srcrect.y = srcrect.y % 256;
   }
 
 }
