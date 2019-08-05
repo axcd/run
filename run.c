@@ -31,7 +31,7 @@ int get_data() {
 
   SDL_DisplayMode displayMode;
   if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
-    return 1;
+    return 0;
     
   Window_WIDTH = displayMode.w;
   Window_HEIGHT = displayMode.h;
@@ -56,14 +56,14 @@ int get_data() {
   dstrect.y = Foo_Y;
   dstrect.w = Foo_W;
   dstrect.h = Foo_H;
-  return 0;
+  return 1;
 }
 
 int Init() {
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != -1)
     return 1;
-  if (get_data() != 0)
+  if (!get_data())
     return 1;
   window = SDL_CreateWindow("SDL2 RUN",
                             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
