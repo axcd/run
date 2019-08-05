@@ -6,6 +6,11 @@
 int Window_WIDTH = 720;
 int Window_HEIGHT = 1280;
 
+const int UP = 1;
+const int DWON = 2;
+const int LEFT = 3;
+const int RIGHT = 4;
+
 SDL_Window *window = NULL;
 SDL_Renderer *render = NULL;
 SDL_Texture *bkgtex = NULL;
@@ -22,29 +27,31 @@ int Max_X, Max_Y, Joy_X, Joy_Y;
 int Foo_W, Foo_H, Foo_X, Foo_Y;
 int code = 0;
 
-int get_data(){
+int get_data() {
 
   SDL_DisplayMode displayMode;
-  if ( SDL_GetCurrentDisplayMode(0, &displayMode) != 0 ) return 1;
+  if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
+    return 1;
+    
   Window_WIDTH = displayMode.w;
   Window_HEIGHT = displayMode.h;
 
-  R = floor(0.25*Window_WIDTH);
-  r = floor(0.12*Window_WIDTH);
-  Joy_X = floor(0.06*Window_WIDTH);
-  Joy_Y = floor(0.06*Window_WIDTH);
-  Max_X = floor(0.35*Window_WIDTH);
-  Max_Y = floor(0.95*Window_HEIGHT);
-  Foo_X = floor(0.2*Window_WIDTH);
-  Foo_Y = floor(0.45*Window_HEIGHT);
-  Foo_W = floor(0.28*Window_WIDTH);
-  Foo_H = floor(0.05*Window_HEIGHT);
-	
+  R = floor(0.25 * Window_WIDTH);
+  r = floor(0.12 * Window_WIDTH);
+  Joy_X = floor(0.06 * Window_WIDTH);
+  Joy_Y = floor(0.06 * Window_WIDTH);
+  Max_X = floor(0.35 * Window_WIDTH);
+  Max_Y = floor(0.95 * Window_HEIGHT);
+  Foo_X = floor(0.2 * Window_WIDTH);
+  Foo_Y = floor(0.45 * Window_HEIGHT);
+  Foo_W = floor(0.28 * Window_WIDTH);
+  Foo_H = floor(0.05 * Window_HEIGHT);
+
   srcrect.x = 205;
   srcrect.y = 0;
   srcrect.w = 205;
   srcrect.h = 64;
-	
+
   dstrect.x = Foo_X;
   dstrect.y = Foo_Y;
   dstrect.w = Foo_W;
@@ -54,8 +61,10 @@ int get_data(){
 
 int Init() {
 
-  if ( SDL_Init(SDL_INIT_EVERYTHING) != -1 ) return 1;
-  if ( get_data() != 0 ) return 1;
+  if (SDL_Init(SDL_INIT_EVERYTHING) != -1)
+    return 1;
+  if (get_data() != 0)
+    return 1;
   window = SDL_CreateWindow("SDL2 RUN",
                             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                             Window_WIDTH, Window_HEIGHT, SDL_WINDOW_SHOWN);
@@ -76,10 +85,10 @@ int Init() {
 }
 
 int load_image() {
-	
-   SDL_Surface *bkg = NULL;
-   SDL_Surface *foo = NULL;
-   SDL_Surface *joy = NULL;
+
+  SDL_Surface *bkg = NULL;
+  SDL_Surface *foo = NULL;
+  SDL_Surface *joy = NULL;
 
   bkg = IMG_Load("resource/background.png");
   if (bkg == NULL) {
@@ -107,76 +116,31 @@ int load_image() {
   return 0;
 }
 
-int iskey() {
-
-  if (pow(xc, 2) + pow(yc, 2) > pow(R, 2)) {
-    return 0;
-  }
-
-  if (pow(xc, 2) + pow(yc, 2) < pow(r, 2)) {
-    return 0;
-  }
-
-  return 1;
-}
-
-int up() {
-
-  if ((1.0 * xc / rc) < cos(PI / 4)) {
-    return 0;
-  }
-
-  return 1;
-}
-
-int down() {
-
-  if ((1.0 * xc / rc) > -cos(PI / 4)) {
-    return 0;
-  }
-
-  return 1;
-}
-
-int left() {
-
-  if ((1.0 * yc / rc) > -cos(PI / 4)) {
-    return 0;
-  }
-
-  return 1;
-}
-
-int right() {
-
-  if ((1.0 * yc / rc) < cos(PI / 4)) {
-    return 0;
-  }
-
-  return 1;
-}
-
 void handle_input() {
 
   if (event.type == SDL_MOUSEMOTION) {
 
-    if (up()) {
-      code = 1;
+    if ((1.0 * xc / rc) > cos(PI / 4)) {
+      code = UP;
     }
 
-    if (down()) {
-      code = 2;
+    if ((1.0 * xc / rc) < -cos(PI / 4)) {
+      code = DWON;
     }
 
-    if (left()) {
-      code = 3;
+    if ((1.0 * yc / rc) < -cos(PI / 4)) {
+      code = LEFT;
     }
 
-    if (right()) {
-      code = 4;
+    if ((1.0 * yc / rc) > cos(PI / 4)) {
+      code = RIGHT;
     }
-    
-    if (!iskey()) {
+
+    if (pow(xc, 2) + pow(yc, 2) > pow(R, 2)) {
+      code = 0;
+    }
+
+    if (pow(xc, 2) + pow(yc, 2) < pow(r, 2)) {
       code = 0;
     }
 
@@ -189,51 +153,55 @@ void handle_input() {
 
 void move() {
 
-  if (code == 1) {
+  if (code == UP) {
     srcrect.x = 205;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    if (dstrect.x <= Max_X)dstrect.x += floor(Foo_H/4);
+    if (dstrect.x <= Max_X)
+      dstrect.x += floor(Foo_H / 4);
   }
 
-  if (code == 2) {
+  if (code == DWON) {
     srcrect.x = 0;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    if ( dstrect.x >= 0 ) dstrect.x -= floor(Foo_H/4);
+    if (dstrect.x >= 0)
+      dstrect.x -= floor(Foo_H / 4);
   }
 
-  if (code == 3 ){
+  if (code == LEFT) {
     srcrect.x = 0;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-    if (dstrect.y >= 0) dstrect.y -= floor(Foo_H/4);
+    if (dstrect.y >= 0)
+      dstrect.y -= floor(Foo_H / 4);
   }
 
-  if (code == 4 ){
+  if (code == RIGHT) {
     srcrect.x = 205;
     srcrect.y += 64;
     srcrect.y = srcrect.y % 256;
-     if (dstrect.y <= Max_Y) dstrect.y += floor(Foo_H/4);
+    if (dstrect.y <= Max_Y)
+      dstrect.y += floor(Foo_H / 4);
   }
 
 }
 
-void put_joystick(){
-	SDL_Rect drect ;
-	SDL_Rect srect ;
-	srect.x = 0;
-    srect.y = 0;
-    srect.w = 2*R;
-    srect.h = 2*R;
-	drect.x = Joy_X;
-    drect.y = Joy_Y;
-    drect.w = 2*R;
-    drect.h = 2*R;
-    SDL_RenderCopy(render, joytex, &srect, &drect);
+void put_joystick() {
+  SDL_Rect drect;
+  SDL_Rect srect;
+  srect.x = 0;
+  srect.y = 0;
+  srect.w = 2 * R;
+  srect.h = 2 * R;
+  drect.x = Joy_X;
+  drect.y = Joy_Y;
+  drect.w = 2 * R;
+  drect.h = 2 * R;
+  SDL_RenderCopy(render, joytex, &srect, &drect);
 }
 
-void display() {	
+void display() {
   SDL_RenderClear(render);
   SDL_RenderCopy(render, bkgtex, NULL, NULL);
   SDL_RenderCopy(render, footex, &srcrect, &dstrect);
